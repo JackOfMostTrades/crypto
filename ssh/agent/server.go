@@ -128,7 +128,7 @@ func (s *server) processRequest(data []byte) (interface{}, error) {
 			Blob:   req.KeyBlob,
 		}
 
-		sig, err := s.agent.Sign(k, req.Data) //  TODO(hanwen): flags.
+		sig, err := s.agent.Sign(k, req.Data, SignatureFlags(req.Flags))
 		if err != nil {
 			return nil, err
 		}

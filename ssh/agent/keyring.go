@@ -181,7 +181,7 @@ func (r *keyring) Add(key AddedKey) error {
 }
 
 // Sign returns a signature for the data.
-func (r *keyring) Sign(key ssh.PublicKey, data []byte) (*ssh.Signature, error) {
+func (r *keyring) Sign(key ssh.PublicKey, data []byte, flags SignatureFlags) (*ssh.Signature, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if r.locked {
