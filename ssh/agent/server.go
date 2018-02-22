@@ -150,6 +150,25 @@ func (s *server) processRequest(data []byte) (interface{}, error) {
 
 	case agentAddIDConstrained, agentAddIdentity:
 		return nil, s.insertIdentity(data)
+
+	case agentExtension:
+		var req extensionAgentMsg
+		if err := ssh.Unmarshal(data, &req); err != nil {
+			return nil, err
+		}
+		res, err := s.agent.Extension(req.ExtensionType, req.Contents)
+		if err != nil {
+			return nil, err
+		}
+		if len(res) == 0 {
+			return nil, nil
+		}
+		// Return a stub object where the whole contents of the response gets marshaled.
+		var responseStub struct {
+			Rest []byte `ssh:"rest"`
+		}
+		responseStub.Rest = res
+		return responseStub, nil
 	}
 
 	return nil, fmt.Errorf("unknown opcode %d", data[0])
